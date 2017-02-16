@@ -3,59 +3,77 @@
 // event and how to react to key and mouse input events.  Make one or two of your own subclasses, and fill them in with all your shape drawing calls and any extra key / mouse controls.
 
 // Now go down to Example_Animation's display() function to see where the sample shapes you see drawn are coded, and a good place to begin filling in your own code.
+var N = 1;
+var model_transform;
+var planetX;
+var planetY;
+var planetZ;
+
+var cameraX;
+var cameraY;
+var cameraZ;
 
 
-
-Declare_Any_Class("Debug_Screen",  // Debug_Screen - An example of a displayable object that our class Canvas_Manager can manage.  Displays a text user interface.
-  {
-    'construct': function (context) {
-      this.define_data_members({ string_map: context.shared_scratchpad.string_map, start_index: 0, tick: 0, visible: false, graphicsState: new Graphics_State() });
-      shapes_in_use.debug_text = new Text_Line(35);
-    },
-    'init_keys': function (controls) {
-      controls.add("t", this, function () { this.visible ^= 1; });
-      controls.add("up", this, function () { this.start_index = (this.start_index + 1) % Object.keys(this.string_map).length; });
-      controls.add("down", this, function () { this.start_index = (this.start_index - 1 + Object.keys(this.string_map).length) % Object.keys(this.string_map).length; });
-      this.controls = controls;
-    },
-    'update_strings': function (debug_screen_object)   // Strings that this displayable object (Debug_Screen) contributes to the UI:
+  Declare_Any_Class("Debug_Screen",  // Debug_Screen - An example of a displayable object that our class Canvas_Manager can manage.  Displays a text user interface.
     {
-      debug_screen_object.string_map["tick"] = "Frame: " + this.tick++;
-      debug_screen_object.string_map["text_scroll_index"] = "Text scroll index: " + this.start_index;
-    },
-    'display': function (time) {
-      if (!this.visible) return;
+      'construct': function (context) {
+        this.define_data_members({ string_map: context.shared_scratchpad.string_map, start_index: 0, tick: 0, visible: false, graphicsState: new Graphics_State() });
+        shapes_in_use.debug_text = new Text_Line(35);
+      },
+      'init_keys': function (controls) {
+        controls.add("t", this, function () { this.visible ^= 1; });
+        controls.add("up", this, function () { this.start_index = (this.start_index + 1) % Object.keys(this.string_map).length; });
+        controls.add("down", this, function () { this.start_index = (this.start_index - 1 + Object.keys(this.string_map).length) % Object.keys(this.string_map).length; });
+        this.controls = controls;
+      },
+      'update_strings': function (debug_screen_object)   // Strings that this displayable object (Debug_Screen) contributes to the UI:
+      {
+        debug_screen_object.string_map["tick"] = "Frame: " + this.tick++;
+        debug_screen_object.string_map["text_scroll_index"] = "Text scroll index: " + this.start_index;
+      },
+      'display': function (time) {
+        if (!this.visible) return;
 
-      shaders_in_use["Default"].activate();
-      gl.uniform4fv(g_addrs.shapeColor_loc, Color(.8, .8, .8, 1));
+        shaders_in_use["Default"].activate();
+        gl.uniform4fv(g_addrs.shapeColor_loc, Color(.8, .8, .8, 1));
 
-      var font_scale = scale(.02, .04, 1),
-        model_transform = mult(translation(-.95, -.9, 0), font_scale),
-        strings = Object.keys(this.string_map);
+        var font_scale = scale(.02, .04, 1),
+          model_transform = mult(translation(-.95, -.9, 0), font_scale),
+          strings = Object.keys(this.string_map);
 
-      for (var i = 0, idx = this.start_index; i < 4 && i < strings.length; i++ , idx = (idx + 1) % strings.length) {
-        shapes_in_use.debug_text.set_string(this.string_map[strings[idx]]);
-        shapes_in_use.debug_text.draw(this.graphicsState, model_transform, true, vec4(0, 0, 0, 1));  // Draw some UI text (strings)
-        model_transform = mult(translation(0, .08, 0), model_transform);
+        for (var i = 0, idx = this.start_index; i < 4 && i < strings.length; i++ , idx = (idx + 1) % strings.length) {
+          shapes_in_use.debug_text.set_string(this.string_map[strings[idx]]);
+          shapes_in_use.debug_text.draw(this.graphicsState, model_transform, true, vec4(0, 0, 0, 1));  // Draw some UI text (strings)
+          model_transform = mult(translation(0, .08, 0), model_transform);
+        }
+        model_transform = mult(translation(.7, .9, 0), font_scale);
+        shapes_in_use.debug_text.set_string("Controls:");
+        shapes_in_use.debug_text.draw(this.graphicsState, model_transform, true, vec4(0, 0, 0, 1));    // Draw some UI text (controls title)
+
+        for (let k of Object.keys(this.controls.all_shortcuts)) {
+          model_transform = mult(translation(0, -0.08, 0), model_transform);
+          shapes_in_use.debug_text.set_string(k);
+          shapes_in_use.debug_text.draw(this.graphicsState, model_transform, true, vec4(0, 0, 0, 1));  // Draw some UI text (controls)
+        }
       }
-      model_transform = mult(translation(.7, .9, 0), font_scale);
-      shapes_in_use.debug_text.set_string("Controls:");
-      shapes_in_use.debug_text.draw(this.graphicsState, model_transform, true, vec4(0, 0, 0, 1));    // Draw some UI text (controls title)
-
-      for (let k of Object.keys(this.controls.all_shortcuts)) {
-        model_transform = mult(translation(0, -0.08, 0), model_transform);
-        shapes_in_use.debug_text.set_string(k);
-        shapes_in_use.debug_text.draw(this.graphicsState, model_transform, true, vec4(0, 0, 0, 1));  // Draw some UI text (controls)
-      }
-    }
-  }, Animation);
+    }, Animation);
 
 Declare_Any_Class("Example_Camera",     // An example of a displayable object that our class Canvas_Manager can manage.  Adds both first-person and
   {
     'construct': function (context)     // third-person style camera matrix controls to the canvas.
     { // 1st parameter below is our starting camera matrix.  2nd is the projection:  The matrix that determines how depth is treated.  It projects 3D points onto a plane.
-      context.shared_scratchpad.graphics_state = new Graphics_State(translation(0, 0, -25), perspective(45, canvas.width / canvas.height, .1, 1000), 0);
+
+      //TODO This initializes where the camera actually starts... (the perspective, fov, translation, etc);
+
+      context.shared_scratchpad.graphics_state = new Graphics_State(translation(0, 0, 0), perspective(45, canvas.width / canvas.height, .1, 1000), 0);
       this.define_data_members({ graphics_state: context.shared_scratchpad.graphics_state, thrust: vec3(), origin: vec3(0, 5, 0), looking: false });
+
+
+      //TODO INITIALIZE CAMERA!!!!!!
+      //this moves the camera in and rotates it down...
+      this.graphics_state.camera_transform = mult(translation(-10, -5, -65), this.graphics_state.camera_transform);
+      // this.graphics_state.camera_transform = mult(rotation(0, 1, 0, 0), this.graphics_state.camera_transform);
+
 
       // *** Mouse controls: ***
       this.mouse = { "from_center": vec2() };
@@ -65,19 +83,57 @@ Declare_Any_Class("Example_Camera",     // An example of a displayable object th
       canvas.addEventListener("mousemove", (function (self) { return function (e) { e = e || window.event; self.mouse.from_center = mouse_position(e); } })(this), false);
       canvas.addEventListener("mouseout", (function (self) { return function (e) { self.mouse.from_center = vec2(); }; })(this), false);    // Stop steering if the mouse leaves the canvas.
     },
+
+
+
+    /*
+    Implement a keyboard based navigation system to allow a user to fly around your solar system. The initial (and reset using the 'r' key) 
+    camera position should be such that the entire solar system is visible from a position slightly above the ecliptic (out of the orbital plane) - 
+    enough that we can see all the planets orbiting. The left and right arrow keys should rotate the heading of the camera by N degrees per keypress. 
+    The up and down arrow keys should rotate the pitch of the camera by N degrees per keypress. Each press of the space bar moves the camera forward 
+    by N units. The number keys (1-9) should set the value of N. N should initially be 1 (and reset to 1). All motion, changes to heading, pitch 
+    and any forward motion, is relative to the current heading and pitch of the camera. – 10 points.
+    */
+
+    //TODO add controls here. most of the stuff garret already finished for us -- we just need to make some minor adjustments.
     'init_keys': function (controls)   // init_keys():  Define any extra keyboard shortcuts here
     {
-      controls.add("Space", this, function () { this.thrust[1] = -1; }); controls.add("Space", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
-      controls.add("z", this, function () { this.thrust[1] = 1; }); controls.add("z", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
-      controls.add("w", this, function () { this.thrust[2] = 1; }); controls.add("w", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
-      controls.add("a", this, function () { this.thrust[0] = 1; }); controls.add("a", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
-      controls.add("s", this, function () { this.thrust[2] = -1; }); controls.add("s", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
-      controls.add("d", this, function () { this.thrust[0] = -1; }); controls.add("d", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
-      controls.add("f", this, function () { this.looking ^= 1; });
-      controls.add(",", this, function () { this.graphics_state.camera_transform = mult(rotation(6, 0, 0, 1), this.graphics_state.camera_transform); });
-      controls.add(".", this, function () { this.graphics_state.camera_transform = mult(rotation(6, 0, 0, -1), this.graphics_state.camera_transform); });
-      controls.add("o", this, function () { this.origin = mult_vec(inverse(this.graphics_state.camera_transform), vec4(0, 0, 0, 1)).slice(0, 3); });
-      controls.add("r", this, function () { this.graphics_state.camera_transform = mat4(); });
+      // controls.add("Space", this, function () { this.thrust[1] = -1; }); controls.add("Space", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
+      // controls.add("z", this, function () { this.thrust[1] = 1; }); controls.add("z", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
+      // controls.add("a", this, function () { this.thrust[0] = 1; }); controls.add("a", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
+      // controls.add("s", this, function () { this.thrust[2] = -1; }); controls.add("s", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
+      // controls.add("d", this, function () { this.thrust[0] = -1; }); controls.add("d", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
+      // controls.add("f", this, function () { this.looking ^= 1; });
+      
+      controls.add("Space", this, function () { this.thrust[2] = N; }); controls.add("Space", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
+      
+      controls.add("a", this, function () {
+
+      });
+      //add N = 1 - 9
+      controls.add("1", this, function () { N = 1; });
+      controls.add("2", this, function () { N = 2; });
+      controls.add("3", this, function () { N = 3; });
+      controls.add("4", this, function () { N = 4; });
+      controls.add("5", this, function () { N = 5; });
+      controls.add("6", this, function () { N = 6; });
+      controls.add("7", this, function () { N = 7; });
+      controls.add("8", this, function () { N = 8; });
+      controls.add("9", this, function () { N = 9; });
+      
+      //rotate
+      controls.add("up", this, function () { this.graphics_state.camera_transform = mult(rotation(N, -1, 0, 0), this.graphics_state.camera_transform); });
+      controls.add("down", this, function () { this.graphics_state.camera_transform = mult(rotation(N, 1, 0, 0), this.graphics_state.camera_transform); });
+      controls.add("left", this, function () { this.graphics_state.camera_transform = mult(rotation(N, 0, -1, 0), this.graphics_state.camera_transform); });
+      controls.add("right", this, function () { this.graphics_state.camera_transform = mult(rotation(N, 0, 1, 0), this.graphics_state.camera_transform); });
+      
+      // controls.add("o", this, function () { this.origin = mult_vec(inverse(this.graphics_state.camera_transform), vec4(0, 0, 0, 1)).slice(0, 3); });
+      controls.add("r", this, function () {
+        this.graphics_state.camera_transform = mat4();
+        this.graphics_state.camera_transform = mult(translation(-10, -5, -65), this.graphics_state.camera_transform);
+        N = 1;
+        // this.graphics_state.camera_transform = mult(rotation(0, 1, 0, 0), this.graphics_state.camera_transform);
+      });
     },
     'update_strings': function (user_interface_string_manager)       // Strings that this displayable object (Animation) contributes to the UI:
     {
@@ -166,7 +222,6 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       graphics_state.lights = [];                    // First clear the light list each frame so we can replace & update lights.
 
       var t = graphics_state.animation_time / 1000, light_orbit = [Math.cos(t), Math.sin(t)];
-      //todo remove these lines
       graphics_state.lights.push(new Light(vec4(10, 0, 0, 1), Color(1, 0, 0, 0), 10000));
 
 
@@ -178,7 +233,7 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
         planetTexture1 = new Material(Color(.4, .6, .8, 1), .4, .6, .9, 30),
         planetTexture2 = new Material(Color(.13, .71, .66, 1), .5, .4, 1, 10),
         planetTexture3 = new Material(Color(.6, .8, 1, 1), .4, .8, 1, 20),
-        planetTexture4 = new Material(Color(.6, .3, 0, 1), .4, .5, .2 , 20)
+        planetTexture4 = new Material(Color(.6, .3, 0, 1), .4, .5, .2, 20)
 
 
 
@@ -191,45 +246,52 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       //Generate sun
       model_transform = mult(model_transform, translation(10, 0, 0));
       shapes_in_use.sun.draw(graphics_state, model_transform, sunTexture)
-      
+
       //generate planet 1
       stack.push(model_transform);
-      model_transform = mult(model_transform, rotation(.12*graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, rotation(.12 * graphics_state.animation_time, 0, 1, 0));
       model_transform = mult(model_transform, translation(-10, 0, 2));
+      // console.log(model_transform[3]);
 
       shapes_in_use.planet1_flat.draw(graphics_state, model_transform, planetTexture1);
       model_transform = stack.pop()
 
       //generate planet 2
       stack.push(model_transform);
-      model_transform = mult(model_transform, rotation(.1*graphics_state.animation_time, 0, 1, 0));
+      // this.shared_scratchpad.graphics_state.gouraud ^= 1;
+      model_transform = mult(model_transform, rotation(.1 * graphics_state.animation_time, 0, 1, 0));
       model_transform = mult(model_transform, translation(-15, 0, 0));
       shapes_in_use.planet2.draw(graphics_state, model_transform, planetTexture2);
       model_transform = stack.pop()
 
       //generate planet 3
       stack.push(model_transform);
-      model_transform = mult(model_transform, rotation(.07*graphics_state.animation_time, 0, 1, 0));
+      //toggle smooth phong
+      // this.shared_scratchpad.graphics_state.gouraud ^= 1;
+
+
+      model_transform = mult(model_transform, rotation(.07 * graphics_state.animation_time, 0, 1, 0));
       model_transform = mult(model_transform, translation(-20, 0, 0));
       shapes_in_use.planet3.draw(graphics_state, model_transform, planetTexture3);
 
       //generate moon
-      model_transform = mult(model_transform, rotation(.5*graphics_state.animation_time, 0, 1, 1));
-      model_transform = mult(model_transform, translation(2, 0 ,0));
+      model_transform = mult(model_transform, rotation(.5 * graphics_state.animation_time, 0, 1, 1));
+      model_transform = mult(model_transform, translation(2, 0, 0));
       shapes_in_use.moon.draw(graphics_state, model_transform, planetTexture1);
       model_transform = stack.pop()
 
       //generate planet 4
       stack.push(model_transform);
-      model_transform = mult(model_transform, rotation(.02*graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, rotation(.02 * graphics_state.animation_time, 0, 1, 0));
       model_transform = mult(model_transform, translation(-30, 0, 0));
       shapes_in_use.planet4.draw(graphics_state, model_transform, planetTexture4);
       model_transform = stack.pop()
 
+      //example....
+      // shaders_in_use[ "Demo_Shader" ].activate();
+      //   model_transform = mult( model_transform, translation( 0, -2, 0 ) );
+      //   shapes_in_use.windmill       .draw( graphics_state, model_transform, placeHolder );
 
 
     }
   }, Animation);
-
-
-
