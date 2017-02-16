@@ -75,7 +75,7 @@ This is given by:
   y = r cosPhi
   z = r sinTheta sinPhi
 
-The number of vertices is equivalent to num_bands^2. The number of vertices that get pushed is (num_bands + 1)^2. This is because we
+The number of vertices is equivalent to num_bands^2. The number of vertices that get *pushed* is apprixmately (num_bands + 1)^2. This is because we
   use <= in order to have an extra point; the way the math works, the last point overlaps w/ the first point
 
 
@@ -115,14 +115,9 @@ Declare_Any_Class("Sphere",          // As our shapes get more complicated, we b
             var loc = vec3(radius * x, radius * y, radius * z)
             //push to positions
             this_shape.positions.push(loc);
-
-            //texture coordinates to map flag images to sphere.  u is negative
-            //to negate the fact that all the flags display upside down.
+            
+            //coordinates to map images.
             this_shape.texture_coords.push(vec2(-u, -v));
-
-            //push the point vector into a list of points
-            // points.push(loc);
-
             this_shape.normals.push(vec3(x, y, z));
 
           }
@@ -145,10 +140,6 @@ Declare_Any_Class("Sphere",          // As our shapes get more complicated, we b
         }
       }
       sphere(num_bands, radius, using_flat_shading);
-
-      for (var i = 0; i < this.positions.length; i++) {
-        console.log(this.positions[i]);
-      }
     }
 
   }, Shape)
@@ -168,14 +159,12 @@ Declare_Any_Class("Tetrahedron",              // A demo of flat vs smooth shadin
 
       if (!using_flat_shading)                                                 // Method 1:  A tetrahedron with shared vertices.  Compact, performs
       {                                                                 // better, but can't produce flat shading or discontinuous seams in textures.
-        console.log("one")
         this.positions.push(vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1));
         this.normals.push(vec3(-a, -a, -a), vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1));
         this.texture_coords.push(vec2(0, 0), vec2(1, 0), vec2(0, 1), vec2(1, 1));
         this.indices.push(0, 1, 2, 0, 1, 3, 0, 2, 3, 1, 2, 3);                     // Vertices are shared multiple times with this method.
       }
       else {
-        console.log("two")
         this.positions.push(vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 1, 0));         // Method 2:  A tetrahedron with four independent triangles.
         this.positions.push(vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 0, 1));
         this.positions.push(vec3(0, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1));

@@ -5,6 +5,7 @@
 // Now go down to Example_Animation's display() function to see where the sample shapes you see drawn are coded, and a good place to begin filling in your own code.
 
 
+
 Declare_Any_Class("Debug_Screen",  // Debug_Screen - An example of a displayable object that our class Canvas_Manager can manage.  Displays a text user interface.
   {
     'construct': function (context) {
@@ -125,6 +126,15 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       shapes_in_use.text = new Text_Line(20);
       shapes_in_use.sphere = new Sphere(5, 1, true);          //Currently the 5 is set to the number of bands (aka vertices = #bands squared)
 
+      //Create our spheres (sun, planets, moon)
+      shapes_in_use.sun = new Sphere(15, 3.6, true);
+      shapes_in_use.planet1 = new Sphere(5, .4, true);
+      shapes_in_use.planet2 = new Sphere(6, 1.6, true);
+      shapes_in_use.planet3 = new Sphere(15, 1, true);
+      shapes_in_use.planet4 = new Sphere(8, 1.2, true);
+      shapes_in_use.moon = new Sphere(15, .4, true);
+
+
 
       shapes_in_use.triangle_flat = Triangle.prototype.auto_flat_shaded_version();
       shapes_in_use.strip_flat = Square.prototype.auto_flat_shaded_version();
@@ -133,7 +143,8 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       shapes_in_use.windmill_flat = Windmill.prototype.auto_flat_shaded_version(10);
       shapes_in_use.rectangle_flat = Rectangle.prototype.auto_flat_shaded_version(3, 1);
       shapes_in_use.text_flat = Text_Line.prototype.auto_flat_shaded_version(20);
-      shapes_in_use.sphere_flat = Sphere.prototype.auto_flat_shaded_version(4, 1, false);
+      shapes_in_use.sphere_flat = Sphere.prototype.auto_flat_shaded_version(6, 1, false);
+      shapes_in_use.planet1_flat = Sphere.prototype.auto_flat_shaded_version(5, .7, false);
 
     },
     'init_keys': function (controls)   // init_keys():  Define any extra keyboard shortcuts here
@@ -158,56 +169,61 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
 
       var t = graphics_state.animation_time / 1000, light_orbit = [Math.cos(t), Math.sin(t)];
       //todo remove these lines
-      // graphics_state.lights.push(new Light(vec4(5, 5, 15, 1), Color(1, 1, 1, 1), 100));
-      // graphics_state.lights.push(new Light(vec4(10, 5, 0, 1), Color(1, 1, 1, 1), 100));
-      // graphics_state.lights.push(new Light(vec4(8, 0, 0, 1), Color(1, 1, 1, 1), 100));
-      // graphics_state.lights.push(new Light(vec4(-8, -5, 0, 1), Color(1, 1, 1, 1), 100));
-      graphics_state.lights.push(new Light(vec4(30 * light_orbit[0], 30 * light_orbit[1], 34 * light_orbit[0], 1), Color(0, .4, 0, 1), 100000));
-      graphics_state.lights.push(new Light(vec4(-10 * light_orbit[0], -20 * light_orbit[1], -14 * light_orbit[0], 0), Color(1, 1, .3, 1), 100 * Math.cos(t / 10)));
+      graphics_state.lights.push(new Light(vec4(10, 0, 0, 1), Color(1, 0, 0, 0), 10000));
+
 
       // *** Materials: *** Declare new ones as temps when needed; they're just cheap wrappers for some numbers.
       // 1st parameter:  Color (4 floats in RGBA format), 2nd: Ambient light, 3rd: Diffuse reflectivity, 4th: Specular reflectivity, 5th: Smoothness exponent, 6th: Texture image.
       var purplePlastic = new Material(Color(.9, .5, .9, 1), .4, .7, .8, 40), // Omit the final (string) parameter if you want no texture
         texture = new Material(Color(0, 0, 0, 1), 1, 1, .4, 35, "box.png"), //change the ambient light and texture (2nd param, 6th param)
-        greyPlastic = new Material(Color(.5, .5, .5, 1), .4, .8, .4, 20),
-        placeHolder = new Material(Color(0, 0, 0, 0), 0, 0, 0, 0, "Blank");
+        sunTexture = new Material(Color(1, .2, 0, 1), .7, .8, .4, 20),
+        planetTexture1 = new Material(Color(.4, .6, .8, 1), .4, .6, .9, 30),
+        planetTexture2 = new Material(Color(.13, .71, .66, 1), .5, .4, 1, 10),
+        planetTexture3 = new Material(Color(.6, .8, 1, 1), .4, .8, 1, 20),
+        planetTexture4 = new Material(Color(.6, .3, 0, 1), .4, .5, .2 , 20)
+
+
 
       /**********************************
       Start coding down here!!!!
       **********************************/                                     // From here on down it's just some example shapes drawn for you -- replace them with your own!
 
       var stack = [];
-      model_transform = mult(model_transform, translation(0, 7, 0));
-      // shapes_in_use.triangle.draw(graphics_state, model_transform, purplePlastic);
 
-      // model_transform = mult(model_transform, translation(0, -2, 0));
-      // model_transform = mult(model_transform, rotation(45, 0, 1, 0));   
+      //Generate sun
+      model_transform = mult(model_transform, translation(10, 0, 0));
+      shapes_in_use.sun.draw(graphics_state, model_transform, sunTexture)
+      
+      //generate planet 1
+      stack.push(model_transform);
+      model_transform = mult(model_transform, rotation(.12*graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, translation(-10, 0, 2));
 
-      // stack.push(model_transform);
-      // console.log(time/100);
-      // model_transform = mult( model_transform, rotation(time/10, 0 , 1, 0));
-      // model_transform = mult(model_transform, translation(time / 1000, 0, 0));
-      // shapes_in_use.strip.draw(graphics_state, model_transform, texture);
-      // model_transform = stack.pop();
+      shapes_in_use.planet1_flat.draw(graphics_state, model_transform, planetTexture1);
+      model_transform = stack.pop()
 
-      // model_transform = mult(model_transform, translation(0, -2, 0));
-      // shapes_in_use.tetrahedron.draw(graphics_state, model_transform, purplePlastic);
+      //generate planet 2
+      stack.push(model_transform);
+      model_transform = mult(model_transform, rotation(.1*graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, translation(-15, 0, 0));
+      shapes_in_use.planet2.draw(graphics_state, model_transform, planetTexture2);
+      model_transform = stack.pop()
 
-      model_transform = mult(model_transform, translation(0, -2, 0));
-      shapes_in_use.tetrahedron.draw(graphics_state, model_transform, greyPlastic);
+      //generate planet 3
+      stack.push(model_transform);
+      model_transform = mult(model_transform, rotation(.07*graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, translation(-20, 0, 0));
+      shapes_in_use.planet3.draw(graphics_state, model_transform, planetTexture3);
+      model_transform = stack.pop()
 
-      model_transform = mult(model_transform, translation(0, -2, 0));
-      shapes_in_use.bad_tetrahedron.draw(graphics_state, model_transform, greyPlastic);
+      //generate planet 4
+      stack.push(model_transform);
+      model_transform = mult(model_transform, rotation(.02*graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, translation(-30, 4, 0));
+      shapes_in_use.planet4.draw(graphics_state, model_transform, planetTexture4);
 
-      // model_transform = mult( model_transform, translation( 0, -2, 0 ) );
-      // shapes_in_use.windmill       .draw( graphics_state, mult( model_transform, rotation( .7*graphics_state.animation_time, .1, .8, .1 ) ), purplePlastic );        
-
-      model_transform = mult(model_transform, translation(0, -2, 0));
-      shapes_in_use.sphere_flat.draw(graphics_state, model_transform, purplePlastic);
-
-      // shaders_in_use[ "Demo_Shader" ].activate();
-      // model_transform = mult(model_transform, translation(0, -2, 0));
-      // shapes_in_use.edward.draw(graphics_state, model_transform, purplePlastic);
+      //generate moon
+      model_transform = stack.pop()
 
 
 
@@ -216,31 +232,3 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
 
 
 
-
-
-
-// graphics_state.lights = [];                    // First clear the light list each frame so we can replace & update lights.
-
-// var t = graphics_state.animation_time / 1000, light_orbit = [Math.cos(t), Math.sin(t)];
-// graphics_state.lights.push(new Light(vec4(5, 5, 15, 1), Color(1, 1, 1, 1), 100));
-// graphics_state.lights.push(new Light(vec4(10, 5, 0, 1), Color(1, 1, 1, 1), 100));
-// graphics_state.lights.push(new Light(vec4(8, 0, 0, 1), Color(1, 1, 1, 1), 100));
-// graphics_state.lights.push(new Light(vec4(-8, -5, 0, 1), Color(1, 1, 1, 1), 100));
-// // graphics_state.lights.push( new Light( vec4( -10*light_orbit[0], -20*light_orbit[1], -14*light_orbit[0], 0 ), Color( 1, 1, .3, 1 ), 100*Math.cos( t/10 ) ) );
-
-// // *** Materials: *** Declare new ones as temps when needed; they're just cheap wrappers for some numbers.
-// // 1st parameter:  Color (4 floats in RGBA format), 2nd: Ambient light, 3rd: Diffuse reflectivity, 4th: Specular reflectivity, 5th: Smoothness exponent, 6th: Texture image.
-// var purplePlastic = new Material(Color(.9, .5, .9, 1), .4, .4, .8, 40), // Omit the final (string) parameter if you want no texture
-//   greyPlastic = new Material(Color(.5, .5, .5, 1), .4, .8, .4, 20);
-
-// var countries = [];
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/china.png"), 1373541278, 15400, 9596960]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/america.png"), 323995528, 57300, 9826630]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/indonesia.png"), 258316051, 11700, 1919440]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/brazil.png"), 205823665, 15200, 8511965]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/pakistan.png"), 201995540, 5100, 803940]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/india.png"), 1266883598, 11700, 3287590]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/nigeria.png"), 186053386, 5900, 923768]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/bangladesh.png"), 156186882, 3900, 56, 977]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/russia.png"), 142355415, 26100, 17075200]);
-// countries.push([new Material(Color(0, 0, 0, 1), .4, .4, .8, 30, "images/japan.png"), 126702133, 38900, 145932]);
