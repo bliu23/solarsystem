@@ -51,12 +51,12 @@ The third planet was given a calm smooth light blue water with even more vertice
 
 10. The fourth planet from the sun is a muddy brownish-orange (you select the specific brownish-orange color). With a complexity (number of vertices) somewhere between the second and third planets. It should be Phong shaded and with a specular highlight that should be apparent when visible. The planet appears quite dull. - 5 points
 #####5 POINTS
-The fourth planet was given a muddy brownish-orange with a complexity between the second and third planets. It is Phone shaded and appears dull.
+The fourth planet was given a muddy brownish-orange with a complexity between the second and third planets. It is Phone shaded and appears dull. Because it is so dull and has a brown muddy color, it's a bit hard to see the lighting. You'll have to look closely to see it.
 
 
 11. Add a moon orbiting around one of your planets. You decide on the moon’s orbital radius and speed, diameter, color and appearance (shading model: flat, Gouraud, Phong). The moon's orbit should not interfere with the orbits of planets adjacent to the one the moon is orbiting. – 10 points.
 #####10 POINTS
-I added a moon around the third planet. This was done in a similar way to the planets orbiting the sun, except the moon orbits a planet. I chose Phong shading and doesn't interfere with any other orbits. Rotates around the (0, 1, 1) axis.
+I added a moon around the third planet. This was done in a similar way to the planets orbiting the sun, except the moon orbits a planet. I chose Phong shading and doesn't interfere with any other orbits. Rotates around the (0, 1, 1) axis. Because it is small, it may be hard to see but all the attributes are there.
 
 
 12. Implement vertex and fragment shading as necessary to light the sun and planets as outlined above. It is up to you to figure out where all or part of the shading is best implemented (i.e. in the application, vertex shader or fragment shader). Where does it make sense to perform lighting calculations, on the CPU or GPU? Vertex or Fragment shader? – 20 points

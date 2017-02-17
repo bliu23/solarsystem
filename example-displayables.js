@@ -201,11 +201,11 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
 
       //Create our spheres (sun, planets, moon)
       shapes_in_use.sun = new Sphere(15, 3.6, true);
-      shapes_in_use.planet1 = new Sphere(5, .4, true);
+//      shapes_in_use.planet1 = new Sphere(5, 1, true);
       shapes_in_use.planet2 = new Sphere(6, 1.6, true);
       shapes_in_use.planet3 = new Sphere(15, 1, true);
       shapes_in_use.planet4 = new Sphere(8, 1.2, true);
-      shapes_in_use.moon = new Sphere(13, .2, true);
+      shapes_in_use.moon = new Sphere(13, .4, true);
 
       shapes_in_use.triangle_flat = Triangle.prototype.auto_flat_shaded_version();
       shapes_in_use.strip_flat = Square.prototype.auto_flat_shaded_version();
@@ -266,54 +266,38 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
 
       //generate planet 1
       stack.push(model_transform);
-      model_transform = mult(model_transform, rotation(.12 * graphics_state.animation_time, 0, 1, 0));
-      model_transform = mult(model_transform, translation(-10, 0, 2));
-      // console.log(model_transform[3]);
-
+      model_transform = mult(model_transform, rotation(.12 * graphics_state.animation_time, 0, 1, 0));   //rotate about the Y axis
+      model_transform = mult(model_transform, translation(-10, 0, 2));                                   //translate, aka we're revolving around the sun
       shapes_in_use.planet1_flat.draw(graphics_state, model_transform, planetTexture1);
       model_transform = stack.pop()
 
       //generate planet 2
       stack.push(model_transform);
-      this.shared_scratchpad.graphics_state.gouraud ^= 1;
-      model_transform = mult(model_transform, rotation(.1 * graphics_state.animation_time, 0, 1, 0));
+      this.shared_scratchpad.graphics_state.gouraud ^= 1;                                               //toggle gouraud
+      model_transform = mult(model_transform, rotation(.1 * graphics_state.animation_time, 0, 1, 0));   //same as above
       model_transform = mult(model_transform, translation(-15, 2.5, 5.5));
-      globalCam = model_transform;
       shapes_in_use.planet2.draw(graphics_state, model_transform, planetTexture2);
-      this.shared_scratchpad.graphics_state.gouraud ^= 1;
+      this.shared_scratchpad.graphics_state.gouraud ^= 1;                                               //toggle phong
       model_transform = stack.pop()
 
       //generate planet 3
       stack.push(model_transform);
-      //toggle smooth phong
-      // this.shared_scratchpad.graphics_state.gouraud ^= 1;
-
-
-      model_transform = mult(model_transform, rotation(.07 * graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, rotation(.07 * graphics_state.animation_time, 0, 1, 0));  //for revolving
       model_transform = mult(model_transform, translation(-20, 0, 0));
       shapes_in_use.planet3.draw(graphics_state, model_transform, planetTexture3);
 
       //generate moon
-      model_transform = mult(model_transform, rotation(.5 * graphics_state.animation_time, 0, 1, 1));
-      model_transform = mult(model_transform, translation(2, 0, 0));
+      model_transform = mult(model_transform, rotation(.5 * graphics_state.animation_time, 0, 1, 1));   //keep model transform to revolve
+      model_transform = mult(model_transform, translation(2, 0, 0));                                    //around planet not sun
       shapes_in_use.moon.draw(graphics_state, model_transform, planetTexture1);
       model_transform = stack.pop()
 
       //generate planet 4
       stack.push(model_transform);
-      model_transform = mult(model_transform, rotation(.02 * graphics_state.animation_time, 0, 1, 0));
+      model_transform = mult(model_transform, rotation(.02 * graphics_state.animation_time, 0, 1, 0));  //same as other planets
       model_transform = mult(model_transform, translation(-30, 0, 0));
       shapes_in_use.planet4.draw(graphics_state, model_transform, planetTexture4);
       model_transform = stack.pop()
-
-      //example....
-      // shaders_in_use[ "Demo_Shader" ].activate();
-      //   model_transform = mult( model_transform, translation( 0, -2, 0 ) );
-      //   shapes_in_use.windmill       .draw( graphics_state, model_transform, placeHolder );
-
-      shaders_in_use["Demo_Shader"].activate();
-      model_transform = mult(model_transform, translation(0, -10, 0));
-      shapes_in_use.planet4.draw(graphics_state, model_transform, planetTexture4);
 
 
     }

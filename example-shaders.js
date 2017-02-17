@@ -90,6 +90,7 @@ Declare_Any_Class( "Phong_or_Gouraud_Shader",
                                                                                 // Is it a point light source?  Calculate the distance to it from the object.  Otherwise use some arbitrary distance.
               dist[i]  = lightPosition[i].w > 0.0 ? distance((camera_transform * lightPosition[i]).xyz, pos) : distance( attenuation_factor[i] * -lightPosition[i].xyz, object_space_pos.xyz );
             }
+
             if( GOURAUD )         // Gouraud mode?  If so, finalize the whole color calculation here in the vertex shader, one per vertex, before we even break it down to pixels in the fragment shader.
             {
               VERTEX_COLOR = vec4( shapeColor.xyz * ambient, shapeColor.w);
@@ -131,7 +132,6 @@ Declare_Any_Class( "Phong_or_Gouraud_Shader",
 
           void main()
           {
-            // console.log("Second: " + GOURAUD + ", colornormals: " + COLOR_NORMALS);
             if( GOURAUD || COLOR_NORMALS )    // Bypass phong lighting if we're only interpolating predefined colors across vertices
             {
               gl_FragColor = VERTEX_COLOR;
@@ -187,7 +187,6 @@ Declare_Any_Class( "Funny_Shader",
         gl.uniform4fv( g_addrs.lightPosition_loc,       lightPositions_flattened );
         gl.uniform4fv( g_addrs.lightColor_loc,          lightColors_flattened );
         gl.uniform1fv( g_addrs.attenuation_factor_loc,  lightAttenuations_flattened );
-
       },
     'vertex_glsl_code_string'  : function()           // ********* VERTEX SHADER *********
       { return `
