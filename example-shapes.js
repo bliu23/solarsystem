@@ -141,10 +141,6 @@ Declare_Any_Class("Sphere",          // As our shapes get more complicated, we b
 
 
 
-
-
-
-
 // *********** TETRAHEDRON ***********
 Declare_Any_Class("Tetrahedron",              // A demo of flat vs smooth shading.  Also our first 3D, non-planar shape.
   {

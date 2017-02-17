@@ -15,8 +15,8 @@ You can find this function in example-shapes.js. The number of vertices is equiv
 
 
 4. Extend the sphere function to generate normal vectors for shading. A parameter should be added to the function specifying the generation of normal vectors for flat, Gouraud or Phong smooth shading. – 15 points.
-#####TODO.
-I don't have parameters for this yet.
+#####15 POINTS.
+The true/false values in example-displayables.js: `shapes_in_use.sphere = new Sphere(5, 1, true);` determine flat vs Gouraud or Phong. Here is my code in example-shapes.js (Declare\_Any\_Class("Sphere")) that show if we're using\_flat\_shading or not: `'populate': function (num_bands, radius, using_flat_shading)`. Normal vectors are generated here: `this_shape.normals.push(vec3(x, y, z));` also in the Declare\_Any\_Class("Sphere"). Flat shading ignores this.
 
 
 5. You will create a small solar system made of spheres. A sun with four (4) orbiting planets. You choose a location (other than the origin) and diameter of the sun, the radius of each planet’s orbit around the sun (keep the orbits in the same plane), the diameters and how fast each planet orbits around the sun – except that each planet should have a different orbital radius, speed and diameter – 5 points. 
