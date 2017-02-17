@@ -17,25 +17,33 @@ Declare_Any_Class("Sphere",
 ```
 
 
-
 4. Extend the sphere function to generate normal vectors for shading. A parameter should be added to the function specifying the generation of normal vectors for flat, Gouraud or Phong smooth shading. – 15 points.
-
+//TODO
 
 
 5. You will create a small solar system made of spheres. A sun with four (4) orbiting planets. You choose a location (other than the origin) and diameter of the sun, the radius of each planet’s orbit around the sun (keep the orbits in the same plane), the diameters and how fast each planet orbits around the sun – except that each planet should have a different orbital radius, speed and diameter – 5 points. 
-
-
+#####5 POINTS
+A solar system was constructed. There is a sun at (10, 0, 0) and the radius of the sun is 3.6 (hence diameter is 7.2).
+I created 4 different planets and I gave each planet a different orbital radius, speed, and diameter.
 
 6. Implement a point light source at the location of the sun. The sun’s size relative to the four planets should determine its color. Large size, the color should be warmer (reddish), or if smaller, the color should be colder (bluish). Use that color for both the light source and the sun’s geometry. You do not need to light the sun's geometry. – 10 points.
-
+#####10 POINTS
+I implemented a point light source at the location of the sun. This was done in example-displayables.js with this line of code:
+```
+graphics_state.lights.push(new Light(vec4(10, 0, 0, 1), Color(1, 0, 0, 0), 10000));
+```
+So the color of the sun is red (because it's large).
 
 
 7. The first planet from the sun should have a faceted appearance. It has an icy-gray color (you select the specific gray). Use flat shading. The complexity of the planet (number of vertices) should be high enough to look like a sphere but low enough that we can readily see the effect of flat shading. - 15 points.
+#####15 POINTS
+The first planet from the sun was created with few vertices `shapes_in_use.planet1_flat = Sphere.prototype.auto_flat_shaded_version(5, .7, false);` as well as flat shading.
 
 
 
 8. The second planet from the sun should have a swampy, watery blue-green color (you select the specific blue-green). The complexity (number of vertices) of this sphere should be higher than the first planet and be Gouraud shaded with a specular highlight that should be apparent when visible. - 15 points.
-
+#####15 POINTS
+The second planet was given a swampy, watery blue-green color with higher vertices and Gouraud shading.
 
 
 9. The third planet from the sun should appear to be covered in calm smooth light blue water (you select the specific light blue). The complexity (number of vertices) of this sphere should be high enough so that when it's Phong shaded and with a specular highlight that should be apparent when visible. The planet appears quite shiny. - 15 points
