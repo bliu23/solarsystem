@@ -235,10 +235,9 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       shaders_in_use["Default"].activate();
 
       // *** Lights: *** Values of vector or point lights over time.  Arguments to construct a Light(): position or vector (homogeneous coordinates), color, size
-      // If you want more than two lights, you're going to need to increase a number in the vertex shader file (index.html).  For some reason this won't work in Firefox.
       graphics_state.lights = [];                    // First clear the light list each frame so we can replace & update lights.
 
-      var t = graphics_state.animation_time / 1000, light_orbit = [Math.cos(t), Math.sin(t)];
+      // var t = graphics_state.animation_time / 1000, light_orbit = [Math.cos(t), Math.sin(t)];
       graphics_state.lights.push(new Light(vec4(10, 0, 0, 1), Color(1, 0, 0, 0), 10000));
 
 

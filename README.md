@@ -1,15 +1,20 @@
 1. Implement the assignment in a clean and understandable manner. Your code must be readily understandable for grading including extensive comments. A README.md that explains what you did and anything else the we need to know to run your assignment including the choices you are asked to make when implementing the assignment (i.e. colors, speeds, radius', etc). – 5 points.
-####5 POINTS
+#####5 POINTS
 I believe I commented everything and made a note of stuff in my readme.
 
 
 2. Set up a WebGL capable HTML canvas able to display without error. Its size should be at least 960x540 and should have the z-buffer enabled and cleared to a black background. Implement necessary shader codes without error. – 5 points.
-####5 POINTS
+#####5 POINTS
+The canvas is 1000x600 pixels. z-buffer is enabled and cleared to a black background. You can find this in index.html.
 
 
 3. Develop a function that generates the geometry for a sphere in a form usable by WebGL. A parameter of the function should define the number of vertices that forms the sphere. – 10 points. 
-10 POINTS
-The number of vertices is equivalent to num_bands^2.
+#####10 POINTS
+You can find this function in example-shapes.js. The number of vertices is equivalent to the num_bands^2. Currently, the parameters specifies the number of bands which thus gives you the number of vertices, so technically a parameter is the number of verticies? I can easily change this later too.
+```
+Declare_Any_Class("Sphere",  
+//the rest of the code is here...
+```
 
 
 
