@@ -64,10 +64,10 @@ I added a moon around the third planet. This was done in a similar way to the pl
 12. Implement vertex and fragment shading as necessary to light the sun and planets as outlined above. It is up to you to figure out where all or part of the shading is best implemented (i.e. in the application, vertex shader or fragment shader). Where does it make sense to perform lighting calculations, on the CPU or GPU? Vertex or Fragment shader? – 20 points
 #####20 POINTS
 To be honest, Garret's library he wrote pretty much did all the vertex and fragment shading we needed. All I did was write 2 sets of 2 lines of code for Phong/Gouraud shading, which computed the dot product for lighting. You can find this in `example-shaders.js`.
-```
-float diffuse  = max(dot(L[i], N), 0.0);
-float specular = pow(max(dot(N, H[i]), 0.0), smoothness);
-```
+
+`float diffuse  = max(dot(L[i], N), 0.0);`
+`float specular = pow(max(dot(N, H[i]), 0.0), smoothness);`
+
 
 
 13. Implement a keyboard based navigation system to allow a user to fly around your solar system. The initial (and reset using the 'r' key) camera position should be such that the entire solar system is visible from a position slightly above the ecliptic (out of the orbital plane) - enough that we can see all the planets orbiting. The left and right arrow keys should rotate the heading of the camera by N degrees per keypress. The up and down arrow keys should rotate the pitch of the camera by N degrees per keypress. Each press of the space bar moves the camera forward by N units. The number keys (1-9) should set the value of N. N should initially be 1 (and reset to 1). All motion, changes to heading, pitch and any forward motion, is relative to the current heading and pitch of the camera. – 10 points.
