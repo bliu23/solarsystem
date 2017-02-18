@@ -73,8 +73,8 @@ R resets the camera position to see the whole solar system (same as it is initia
 
 
 14. Allow the camera to attach to/detach from, using the 'a' and 'd' keys respectively, one of the orbiting planets (you select which planet). While attached allow only the heading of the camera to be changed interactively by the user. You can place the camera at any radius near the selected planet (the camera does not orbit the planet). The camera's radius cannot interfere with the orbits of planets adjacent to the one the camera is orbiting. When detaching, the camera should return to the position it had before it attached to the planet. – 10 points. 
-#####TODO
-Working on this now...
-
+#####10 POINTS
+This was done by toggling a global variable called `attach`. If attached, the camera was changed with this piece of code: `this.shared_scratchpad.graphics_state.camera_transform = inverse(model_transform);` where model_transform is the model transform of the planet it is attaching to. I also implemented a couple more matrix multiplications to factor in up down left and right camera heading changes. I also kept a variable that stored the previous state so pressing 'd' send you right back.
+Note: Pressing 'a' attaches you, and pressing it again does nothing. Only when you press 'd' will you detach, and your original position and camera heading right before you pressed 'a' will be restored.
 
 
