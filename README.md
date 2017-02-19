@@ -69,6 +69,14 @@ That should do the trick.
 13. Implement a keyboard based navigation system to allow a user to fly around your solar system. The initial (and reset using the 'r' key) camera position should be such that the entire solar system is visible from a position slightly above the ecliptic (out of the orbital plane) - enough that we can see all the planets orbiting. The left and right arrow keys should rotate the heading of the camera by N degrees per keypress. The up and down arrow keys should rotate the pitch of the camera by N degrees per keypress. Each press of the space bar moves the camera forward by N units. The number keys (1-9) should set the value of N. N should initially be 1 (and reset to 1). All motion, changes to heading, pitch and any forward motion, is relative to the current heading and pitch of the camera. – 10 points.
 #####10 POINTS
 R resets the camera position to see the whole solar system (same as it is initialized too). Left, right, up, and down change the camera heading by N degrees (N = 1 to 9 given a keypress, N reset to 1 on r keypress). Each press of spacebar (and holding it too) moves camera forward by N units. All movement is relative to camera heading too. 
+CAMERA CONTROL:
+B moves the camera back by N.
+Space moves the camera forward by N.
+V moves the camera left by N.
+N moves the camera right by N.
+',' moves the camera up by N.
+'.' move sthe camera down by N.
+When attached, you cannot move the camera, only the camera heading. Again, all movement is relative to camera heading.
 
 
 

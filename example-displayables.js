@@ -4,6 +4,7 @@
 
 // Now go down to Example_Animation's display() function to see where the sample shapes you see drawn are coded, and a good place to begin filling in your own code.
 var N = 1;
+var saved_N = 1;
 var model_transform;
 var planetX;
 var planetY;
@@ -77,9 +78,9 @@ Declare_Any_Class("Example_Camera",     // An example of a displayable object th
       this.define_data_members({ graphics_state: context.shared_scratchpad.graphics_state, thrust: vec3(), origin: vec3(0, 5, 0), looking: false });
 
 
-      //TODO INITIALIZE CAMERA!!!!!!
+      //INITIALIZE CAMERA!!!!!!
       //this moves the camera in and rotates it down...
-      this.graphics_state.camera_transform = mult(translation(-0, -5, -35), this.graphics_state.camera_transform);
+      this.graphics_state.camera_transform = mult(translation(0, -7, -35), this.graphics_state.camera_transform);
 
       // *** Mouse controls: ***
       this.mouse = { "from_center": vec2() };
@@ -103,12 +104,14 @@ Declare_Any_Class("Example_Camera",     // An example of a displayable object th
     'init_keys': function (controls)   // init_keys():  Define any extra keyboard shortcuts here
     {
       // controls.add("Space", this, function () { this.thrust[1] = -1; }); controls.add("Space", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
-      // controls.add("z", this, function () { this.thrust[1] = 1; }); controls.add("z", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
-      // controls.add("a", this, function () { this.thrust[0] = 1; }); controls.add("a", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
-      // controls.add("s", this, function () { this.thrust[2] = -1; }); controls.add("s", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
-      // controls.add("d", this, function () { this.thrust[0] = -1; }); controls.add("d", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
-      // controls.add("f", this, function () { this.looking ^= 1; });
-
+      controls.add(",", this, function () { this.thrust[1] = -N; }); controls.add(",", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
+      controls.add(".", this, function () { this.thrust[1] = N; }); controls.add(".", this, function () { this.thrust[1] = 0; }, { 'type': 'keyup' });
+      controls.add("v", this, function () { this.thrust[0] = N; }); controls.add("v", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
+      controls.add("n", this, function () { this.thrust[0] = -N; }); controls.add("n", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
+      //b to go backwards
+      controls.add("b", this, function () { this.thrust[2] = -N; }); controls.add("b", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
+      controls.add("i", this, function () { this.thrust[0] = -N; }); controls.add("i", this, function () { this.thrust[0] = 0; }, { 'type': 'keyup' });
+      
       controls.add("Space", this, function () { this.thrust[2] = N; }); controls.add("Space", this, function () { this.thrust[2] = 0; }, { 'type': 'keyup' });
 
       //add N = 1 - 9
@@ -149,6 +152,8 @@ Declare_Any_Class("Example_Camera",     // An example of a displayable object th
       controls.add("a", this, function () {
         if(attach == false) {
            originalPosition = this.graphics_state.camera_transform;
+           saved_N = N;
+           N = 0;
            console.log(originalPosition);
         }
         attach = true;
@@ -163,6 +168,7 @@ Declare_Any_Class("Example_Camera",     // An example of a displayable object th
       controls.add("d", this, function() {
         attach = false;
         this.graphics_state.camera_transform = originalPosition;
+        N = saved_N;
         console.log(originalPosition);
       })
 
@@ -238,13 +244,14 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       // shapes_in_use.text_flat = Text_Line.prototype.auto_flat_shaded_version(20);
       // shapes_in_use.sphere_flat = Sphere.prototype.auto_flat_shaded_version(6, 1, false);
       shapes_in_use.planet1_flat = Sphere.prototype.auto_flat_shaded_version(5, .7, false);
-
+      //auto animate
+      this.shared_scratchpad.animate ^= 1;
     },
     'init_keys': function (controls)   // init_keys():  Define any extra keyboard shortcuts here
     {
       controls.add("ALT+g", this, function () { this.shared_scratchpad.graphics_state.gouraud ^= 1; });   // Make the keyboard toggle some
       controls.add("ALT+n", this, function () { this.shared_scratchpad.graphics_state.color_normals ^= 1; });   // GPU flags on and off.
-      controls.add("ALT+a", this, function () { this.shared_scratchpad.animate ^= 1; });
+
     },
     'update_strings': function (user_interface_string_manager)       // Strings that this displayable object (Animation) contributes to the UI:
     {
@@ -289,6 +296,7 @@ Declare_Any_Class("Example_Animation",  // An example of a displayable object th
       globalCam = inverse(model_transform);
       shapes_in_use.planet1_flat.draw(graphics_state, model_transform, planetTexture1);
       if (attach) {
+        //translate and rotate to 
         model_transform = mult(model_transform, translation(-2, 2, 2));
         model_transform = mult(model_transform, rotation(270, 0, 1, 0));
         model_transform = mult(model_transform, rotation(-30, 1, 0, 0));
