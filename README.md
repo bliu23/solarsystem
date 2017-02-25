@@ -1,3 +1,5 @@
+Please grade v1.0
+
 1. Implement the assignment in a clean and understandable manner. Your code must be readily understandable for grading including extensive comments. A README.md that explains what you did and anything else the we need to know to run your assignment including the choices you are asked to make when implementing the assignment (i.e. colors, speeds, radius', etc). – 5 points.
 #####5 POINTS
 I believe I commented everything and made a note of stuff in my readme.
@@ -84,5 +86,6 @@ When attached, you cannot move the camera, only the camera heading. Again, all m
 #####10 POINTS
 This was done by toggling a global variable called `attach`. If attached, the camera was changed with this piece of code: `this.shared_scratchpad.graphics_state.camera_transform = inverse(model_transform);` where model_transform is the model transform of the planet it is attaching to. I also implemented a couple more matrix multiplications to factor in up down left and right camera heading changes. I also kept a variable that stored the previous state so pressing 'd' send you right back.
 Note: Pressing 'a' attaches you, and pressing it again does nothing. Only when you press 'd' will you detach, and your original position and camera heading right before you pressed 'a' will be restored.
+*Note2:* Attach and detach have their own camera positions and N so what you set in attach won't necessarily be what you set in detach mode. We're default in detach mode.
 
 
